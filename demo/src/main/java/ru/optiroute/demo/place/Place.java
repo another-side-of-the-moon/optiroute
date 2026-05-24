@@ -1,9 +1,13 @@
 package ru.optiroute.demo.place;
 
 import jakarta.persistence.*;
+import ru.optiroute.demo.place.category.Category;
+import ru.optiroute.demo.place.review.Review;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "places")
@@ -49,23 +53,10 @@ public class Place {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public Place() {
-    }
+    @Column(name = "city")
+    private String city;
 
-    public Place(Long id, String name, Category category, String description,
-                 String imageUrl, Double latitude, Double longitude, String address,
-                 Double avgRating, Long kudagoId, Double avgTimeSpent) {
-        this.id = id;
-        this.name = name;
-        this.category = category;
-        this.description = description;
-        this.imageUrl = imageUrl;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.address = address;
-        this.avgRating = avgRating;
-        this.kudagoId = kudagoId;
-        this.avgTimeSpent = avgTimeSpent;
+    public Place() {
     }
 
     @PrePersist
@@ -76,40 +67,41 @@ public class Place {
         }
     }
 
+    private static final Map<String, Double> CATEGORY_TIME_MAP = Map.ofEntries(
+            Map.entry("amusement", 1.5),
+            Map.entry("art-centers", 2.0),
+            Map.entry("art-space", 2.0),
+            Map.entry("attractions", 1.5),
+            Map.entry("church", 0.75),
+            Map.entry("culture", 2.0),
+            Map.entry("homesteads", 2.5),
+            Map.entry("kids", 2.5),
+            Map.entry("monastery", 0.75),
+            Map.entry("museums", 4.0),
+            Map.entry("palace", 2.5),
+            Map.entry("park", 2.0),
+            Map.entry("photo-places", 1.0),
+            Map.entry("prirodnyj-zapovednik", 3.0),
+            Map.entry("recreation", 4.0),
+            Map.entry("restaurants", 1.5),
+            Map.entry("sights", 1.5),
+            Map.entry("suburb", 4.0),
+            Map.entry("synagogue", 0.75),
+            Map.entry("temple", 0.75),
+            Map.entry("theatre", 2.5)
+    );
+
     private Double getDefaultTimeByCategory() {
-        if (category == null) return 1.0;
-
-        String categoryName = category.getName().toLowerCase();
-
-        if (categoryName.contains("музей") || categoryName.contains("museum")) {
-            return 3.0;
-        } else if (categoryName.contains("парк") || categoryName.contains("park")) {
-            return 1.5;
-        } else if (categoryName.contains("ресторан") || categoryName.contains("restaurant")
-                || categoryName.contains("кафе") || categoryName.contains("cafe")) {
-            return 1.5;
-        } else if (categoryName.contains("театр") || categoryName.contains("theatre")) {
-            return 2.5;
-        } else if (categoryName.contains("кино") || categoryName.contains("cinema")) {
-            return 2.0;
-        } else if (categoryName.contains("галерея") || categoryName.contains("gallery")) {
-            return 2.0;
-        } else if (categoryName.contains("зоопарк") || categoryName.contains("zoo")) {
-            return 3.0;
-        } else if (categoryName.contains("магазин") || categoryName.contains("shop")
-                || categoryName.contains("молл") || categoryName.contains("mall")) {
-            return 1.5;
-        } else if (categoryName.contains("собор") || categoryName.contains("церковь")
-                || categoryName.contains("храм") || categoryName.contains("church")) {
-            return 1.0;
-        } else if (categoryName.contains("выставка") || categoryName.contains("exhibition")) {
+        if (category == null || category.getKudagoSlug() == null) {
             return 1.5;
         }
 
-        return 1.0;
+        return CATEGORY_TIME_MAP.getOrDefault(
+                category.getKudagoSlug().toLowerCase(),
+                1.5
+        );
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -212,5 +204,13 @@ public class Place {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

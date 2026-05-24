@@ -1,5 +1,7 @@
 package ru.optiroute.demo.place;
 
+import ru.optiroute.demo.place.review.ReviewDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +20,11 @@ public class PlaceDTO {
     private List<ReviewDTO> reviews = new ArrayList<>();
     private String estimatedTime;
     private String timeSpentAtPlace;
+    private String city;
 
     public PlaceDTO() {
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -133,5 +135,13 @@ public class PlaceDTO {
 
     public void setTimeSpentAtPlace(String timeSpentAtPlace) {
         this.timeSpentAtPlace = timeSpentAtPlace;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

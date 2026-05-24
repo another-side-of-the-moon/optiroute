@@ -2,18 +2,13 @@ package ru.optiroute.demo.place;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import ru.optiroute.demo.place.PlaceDTO;
-import ru.optiroute.demo.place.PlaceSearchRequest;
-import ru.optiroute.demo.place.ReviewDTO;
-import ru.optiroute.demo.place.Place;
-import ru.optiroute.demo.place.Review;
-import ru.optiroute.demo.place.PlaceRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import ru.optiroute.demo.place.category.CategoryController;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/places")
@@ -30,6 +25,7 @@ public class PlaceController {
     public ResponseEntity<List<PlaceDTO>> searchPlaces(
             @RequestParam(required = false) String query,
             @RequestParam(required = false) List<String> categories,
+            @RequestParam(required = false) String city,  // НОВЫЙ ПАРАМЕТР
             @RequestParam(required = false) Double minRating,
             @RequestParam(required = false) Double minTimeSpent,
             @RequestParam(required = false) Double maxTimeSpent,
@@ -38,7 +34,27 @@ public class PlaceController {
 
         PlaceSearchRequest request = new PlaceSearchRequest();
         request.setQuery(query);
-        request.setCategories(categories);
+
+        if (categories != null && !categories.isEmpty()) {
+            List<String> decodedCategories = new ArrayList<>();
+            for (String cat : categories) {
+                try {
+                    decodedCategories.add(URLDecoder.decode(cat, StandardCharsets.UTF_8));
+                } catch (Exception e) {
+                    decodedCategories.add(cat);
+                }
+            }
+            request.setCategories(decodedCategories);
+        }
+
+        if (city != null && !city.isEmpty()) {
+            try {
+                city = URLDecoder.decode(city, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+            }
+        }
+        request.setCity(city);
+
         request.setMinRating(minRating);
         request.setMinTimeSpent(minTimeSpent);
         request.setMaxTimeSpent(maxTimeSpent);
@@ -60,9 +76,18 @@ public class PlaceController {
         return ResponseEntity.ok(placeService.updateTimeSpent(id, timeSpent));
     }
 
+    @GetMapping("/cities")
+    public ResponseEntity<List<String>> getCities() {
+        return ResponseEntity.ok(placeService.getCities());
+    }
     @PostMapping("/load-from-kudago")
     public ResponseEntity<String> loadPlacesFromKudaGo() {
         placeService.loadPlacesFromKudaGo();
-        return ResponseEntity.ok("Places loaded successfully");
+        return ResponseEntity.ok("Places loaded successfully for allowed categories");
+    }
+
+    @GetMapping("/allowed-categories")
+    public ResponseEntity<List<Map<String, Object>>> getAllowedCategories() {
+        return ResponseEntity.ok(CategoryController.ALLOWED_CATEGORIES);
     }
 }

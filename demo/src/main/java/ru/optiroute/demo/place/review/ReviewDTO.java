@@ -1,4 +1,4 @@
-package ru.optiroute.demo.place;
+package ru.optiroute.demo.place.review;
 
 public class ReviewDTO {
     private Long id;

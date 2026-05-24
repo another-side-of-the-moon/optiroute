@@ -1,6 +1,5 @@
-package ru.optiroute.demo.place;
+package ru.optiroute.demo.place.review;
 
-import ru.optiroute.demo.place.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

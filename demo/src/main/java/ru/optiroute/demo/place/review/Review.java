@@ -1,6 +1,8 @@
-package ru.optiroute.demo.place;
+package ru.optiroute.demo.place.review;
 
 import jakarta.persistence.*;
+import ru.optiroute.demo.place.Place;
+
 import java.time.LocalDateTime;
 
 @Entity

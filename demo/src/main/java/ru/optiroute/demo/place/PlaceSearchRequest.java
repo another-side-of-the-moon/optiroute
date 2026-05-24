@@ -13,11 +13,11 @@ public class PlaceSearchRequest {
     private Double userLongitude;
     private Integer page = 0;
     private Integer size = 20;
+    private String city;
 
     public PlaceSearchRequest() {
     }
 
-    // Getters and Setters
     public String getQuery() {
         return query;
     }
@@ -96,5 +96,13 @@ public class PlaceSearchRequest {
 
     public void setSize(Integer size) {
         this.size = size;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

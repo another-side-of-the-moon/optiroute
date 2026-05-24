@@ -1,36 +1,36 @@
 package ru.optiroute.demo.place;
 
 import ru.optiroute.demo.place.Place;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface PlaceRepository extends JpaRepository<Place, Long> {
 
     List<Place> findByCategoryName(String categoryName);
 
-    @EntityGraph(attributePaths = {"reviews", "category"})
+    List<Place> findByCity(String city);  // НОВЫЙ МЕТОД
+
+    List<Place> findByCityAndCategoryName(String city, String categoryName);  // НОВЫЙ МЕТОД
+
     List<Place> findByNameContainingIgnoreCase(String name);
 
-    @EntityGraph(attributePaths = {"reviews", "category"})
+    List<Place> findByNameContainingIgnoreCaseAndCity(String name, String city);  // НОВЫЙ МЕТОД
+
     List<Place> findByNameContainingIgnoreCaseAndCategoryName(String name, String categoryName);
 
-    @EntityGraph(attributePaths = {"reviews", "category"})
+    List<Place> findByNameContainingIgnoreCaseAndCategoryNameAndCity(String name, String categoryName, String city);  // НОВЫЙ МЕТОД
+
     List<Place> findByNameContainingIgnoreCaseAndAvgRatingGreaterThanEqual(String name, Double minRating);
 
-    @EntityGraph(attributePaths = {"reviews", "category"})
+    List<Place> findByNameContainingIgnoreCaseAndAvgRatingGreaterThanEqualAndCity(String name, Double minRating, String city);  // НОВЫЙ МЕТОД
+
     List<Place> findByAvgRatingGreaterThanEqual(Double minRating);
 
-    @EntityGraph(attributePaths = {"reviews", "category"})
-    List<Place> findAll();
-
-    @EntityGraph(attributePaths = {"reviews", "category"})
-    Optional<Place> findById(Long id);
+    List<Place> findByAvgRatingGreaterThanEqualAndCity(Double minRating, String city);  // НОВЫЙ МЕТОД
 
     List<Place> findByKudagoId(Long kudagoId);
 
